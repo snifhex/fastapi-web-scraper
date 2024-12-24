@@ -1,5 +1,6 @@
 # FastAPI Web Scraper
 
+Simple webscraper built with fastapi, postgres and redis.
 
 ## Prerequisites
 
