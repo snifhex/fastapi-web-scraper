@@ -15,6 +15,8 @@ class Settings(BaseSettings):
     AWS_SECRET_ACCESS_KEY: str = "minioadmin"
     AWS_BUCKET_NAME: str = "scraper-bucket"
     AWS_ENDPOINT_URL: str = "http://localhost:9000"
+    MAX_RETRIES: int = 3
+    MAX_DELAY: int = 5
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", case_sensitive=True)
 

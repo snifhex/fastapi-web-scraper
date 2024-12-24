@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup as bs
 
 from app.core.config import get_settings
 from app.scrape.schemas import ProductCreate, ScraperStartSettingsRequest
+from app.utils.retry import retry
 
 settings = get_settings()
 
@@ -35,13 +36,16 @@ class WebScraper:
             return ""
         return image.get("data-lazy-src") or image.get("src") or ""
 
+    @retry(retries=get_settings().MAX_RETRIES, delay=get_settings().MAX_DELAY)
+    def _fetch_page(self, url: str, proxy: Optional[Dict] = None) -> bs:
+        resp = requests.get(url, proxies=proxy if proxy else None)
+        resp.raise_for_status()
+        return bs(resp.content, "html.parser")
+
     def _scrape_page(self, page: int, proxy: Optional[Dict] = None) -> Iterator[ProductCreate]:
         try:
             url = f"{self.BASE_URL}page/{page}" if page > 1 else self.BASE_URL
-            resp = requests.get(url, proxies=proxy)
-            resp.raise_for_status()
-            soup = bs(resp.content, "html.parser")
-
+            soup = self._fetch_page(url, proxy=proxy)
             products = soup.select("li.product")
             for product in products:
                 product_title = self._get_product_title(product)
