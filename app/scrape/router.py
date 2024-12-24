@@ -1,4 +1,4 @@
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Security
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, Security
 from fastapi.security import APIKeyHeader
 from starlette import status
 
@@ -9,6 +9,7 @@ from app.core.config import get_settings
 from app.core.db import db_dependency
 from app.scrape.schemas import JobResponse, ScraperStartSettingsRequest
 from app.scrape.service import ScraperService
+from app.utils.rate_limiter import limiter
 
 scraper_router = APIRouter()
 
@@ -22,7 +23,9 @@ async def verify_api_key(api_key: str = Security(API_KEY_HEADER)):
 
 
 @scraper_router.post("/", response_model=JobResponse, status_code=status.HTTP_201_CREATED)
+@limiter.limit("5/second")
 async def scrape_products(
+    request: Request,
     scraper_settings: ScraperStartSettingsRequest,
     background_tasks: BackgroundTasks,
     db: db_dependency,
