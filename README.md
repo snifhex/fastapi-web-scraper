@@ -20,7 +20,7 @@
    ```
 
 3. Access the Swagger UI:
-   - Swagger UI: http://localhost:8000/docs
+   - Swagger UI: http://localhost:80/docs
 
 ## Run locally via docker 
 
@@ -37,8 +37,9 @@ app/
 │   ├── cache/          # Caching strategies
 │   ├── notification/   # Notification services
 │   └── storage/        # Storage implementations
-├── core/               # Core application code
+├── core/               # Db, Config, setting etc 
 ├── scrape/             # Scraping service
+├── utils/              # Rate limiter, Retry decorator etc
 └── main.py             # Application entry point
 ```
 
