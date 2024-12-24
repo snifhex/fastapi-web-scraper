@@ -1,4 +1,5 @@
-# Fastapi 
+# FastAPI Web Scraper
+
 
 ## Prerequisites
 
@@ -43,6 +44,22 @@ app/
 └── main.py             # Application entry point
 ```
 
+## Simple Diagram
+```mermaid
+graph TD
+    A[FastAPI App] --> B[Authentication]
+    B --> C[Scraper App]
+    C --> D[Scraper Service]
+    D --> E[Web Scraper]
+    D --> I[(PostgreSQL)]
+    D --> F[Storage Strategy]
+    D --> G[Cache Strategy]
+    D --> H[Notification Strategy]
+    F --> J[S3 Storage]
+    G --> K[(Redis Cache)]
+    H --> L[Console Logger]
+```
+
 ## Development
 
 1. Install Dependencies
@@ -60,13 +77,15 @@ app/
 
 ## Environment Variable
 
-| Variable | Description | Default | Required |
-|----------|-------------|---------|----------|
-| API_TOKEN | Authentication token | super | Yes |
-| DATABASE_URL | Database connection | postgresql://postgres:password@localhost:5432/scraped | Yes |
-| REDIS_HOST | Redis server address | localhost | Yes |
-| REDIS_PORT | Redis server port | 6379 | Yes |
-| AWS_ACCESS_KEY_ID | MinIO access key | minioadmin | Yes |
-| AWS_SECRET_ACCESS_KEY | MinIO secret key | minioadmin | Yes |
-| AWS_BUCKET_NAME | Storage bucket name | scraper-bucket | Yes |
-| AWS_ENDPOINT_URL | MinIO endpoint | http://localhost:9000 | Yes |
+| Variable | Description | Default | 
+|----------|-------------|---------|
+| API_TOKEN | Authentication token | super |
+| DATABASE_URL | Database connection | postgresql://postgres:password@localhost:5432/scraped |
+| REDIS_HOST | Redis server address | localhost |
+| REDIS_PORT | Redis server port | 6379 |
+| AWS_ACCESS_KEY_ID | MinIO access key | minioadmin |
+| AWS_SECRET_ACCESS_KEY | MinIO secret key | minioadmin |
+| AWS_BUCKET_NAME | Storage bucket name | scraper-bucket |
+| AWS_ENDPOINT_URL | MinIO endpoint | http://localhost:9000 |
+| MAX_RETRIES | Request Max retry count | 3 | 
+| MAX_DELAY | Wait time between retries | 5 | 
