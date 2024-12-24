@@ -30,6 +30,26 @@ Simple webscraper built with fastapi, postgres and redis.
   docker compose -f docker-compose.local.yaml up -d
   ```
 
+## Quick Test
+
+```bash
+# Start scraping with default settings
+curl -X POST "http://localhost:80/api/v1/scrape/" \
+  -H "X-API-Key: super" \
+  -H "Content-Type: application/json" \
+  -d '{"page_limit": 5}'
+
+# Start scraping with proxy
+curl -X POST "http://localhost:80/api/v1/scrape/" \
+  -H "X-API-Key: super" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "page_limit": 5,
+    "proxy": "http://your-proxy:8080"
+  }'
+
+```
+
 ## Project Structure
 
 ```bash
