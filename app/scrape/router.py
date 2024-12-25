@@ -1,11 +1,10 @@
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, Security
-from fastapi.security import APIKeyHeader
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request
 from starlette import status
 
 from app.common.cache.strategy import RedisCache
 from app.common.notification.strategy import ConsoleNotification
 from app.common.storage.strategy import S3ImageStorage
-from app.core.config import get_settings
+from app.core.auth import verify_api_key
 from app.core.db import db_dependency
 from app.scrape.schemas import JobResponse, ScraperStartSettingsRequest
 from app.scrape.service import ScraperService
@@ -13,16 +12,8 @@ from app.utils.rate_limiter import limiter
 
 scraper_router = APIRouter()
 
-API_KEY_HEADER = APIKeyHeader(name="X-API-Key")
 
-
-async def verify_api_key(api_key: str = Security(API_KEY_HEADER)):
-    if api_key != get_settings().API_TOKEN:
-        raise HTTPException(status_code=403, detail="Could not validate API key")
-    return api_key
-
-
-@scraper_router.post("/", response_model=JobResponse, status_code=status.HTTP_201_CREATED)
+@scraper_router.post("/", response_model=JobResponse, status_code=status.HTTP_202_ACCEPTED)
 @limiter.limit("5/second")
 async def scrape_products(
     request: Request,
